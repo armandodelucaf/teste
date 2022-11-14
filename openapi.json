@@ -1,0 +1,2024 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Consumidor Final",
+    "version": "0.1",
+    "description": "Serviço para gestão de Consumidores Finais.\n\nViabiliza que o Consumidor Final possa cadastrar ou atualizar seus dados na página de promoções da Ipiranga (_Landing page_).\n\nPermitirá ainda que ele possa consultar seus dados e ainda solicitar que seus dados sejam excluídos da base de campanhas promocionais da Ipiranga/Revendedores/Franqueados.",
+    "contact": {
+      "name": "Ipiranga",
+      "url": "http://www.ipiranga.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081"
+    }
+  ],
+  "paths": {
+    "/consumidores": {
+      "post": {
+        "summary": "Cadastrar um consumidor",
+        "operationId": "post_consumidores",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "examples": {
+                  "consumidor cadastrado": {
+                    "value": {
+                      "message": "Consumidor cadastrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados necessários não informados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {
+                  "cpf inválido": {
+                    "value": {
+                      "message": "CPF tem número inválido"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email ou CPF já cadastrados",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {
+                  "email já cadastrado": {
+                    "value": {
+                      "namespace": "rest-sample",
+                      "informationLink": "http://localhost",
+                      "code": "VL001",
+                      "correlationId": null,
+                      "debugId": "5013d743-f534-4bb3-b6cc-69787044fc8d",
+                      "message": "email já cadastrado.",
+                      "name": "VALIDATION_ERROR",
+                      "details": [
+                        {
+                          "field": "",
+                          "issue": "value_error.missing",
+                          "location": "body"
+                        }
+                      ]
+                    }
+                  },
+                  "cpf já cadastrado": {
+                    "value": {
+                      "namespace": "rest-sample",
+                      "informationLink": "http://localhost",
+                      "code": "VL001",
+                      "correlationId": null,
+                      "debugId": "5013d743-f534-4bb3-b6cc-69787044fc8d",
+                      "message": "CPF já cadastrado.",
+                      "name": "VALIDATION_ERROR",
+                      "details": [
+                        {
+                          "field": "",
+                          "issue": "value_error.missing",
+                          "location": "body"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "properties": {
+                      "nome": {
+                        "type": "string",
+                        "description": "Primeiro nome do Consumidor Final."
+                      },
+                      "sobrenome": {
+                        "type": "string",
+                        "description": "Sobrenome do Consumidor Final."
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "fulano@email.me",
+                        "description": "email do Consumidor Final.",
+                        "minLength": 6
+                      },
+                      "cpf": {
+                        "type": "string",
+                        "minLength": 11,
+                        "maxLength": 11,
+                        "description": "Número do CPF do Consumidor Final"
+                      },
+                      "dataAniversario": {
+                        "type": "string",
+                        "format": "date",
+                        "maxLength": 10,
+                        "description": "Data de nascimento do Consumidor Final",
+                        "minLength": 10
+                      },
+                      "telefoneDDD": {
+                        "type": "string",
+                        "description": "DDD do Número de telefone do Consumidor Final.\nExemplo: 61",
+                        "minLength": 2,
+                        "maxLength": 2
+                      },
+                      "telefoneNumero": {
+                        "type": "string",
+                        "minLength": 8,
+                        "maxLength": 9,
+                        "description": "Número do telefone do Consumidor Final"
+                      },
+                      "redeSocialOrigem": {
+                        "type": "array",
+                        "description": "Lista contendo nomes de redes sociais onde o Consumidor Final foi impactado",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "cadastroAtualizado": {
+                        "type": "boolean",
+                        "description": "Consumidor Final completou o seus dados de cadastro?"
+                      },
+                      "emailVerificado": {
+                        "type": "boolean",
+                        "description": "Consumidor Final realizou a confirmação do email informado?"
+                      },
+                      "termosUso": {
+                        "type": "boolean",
+                        "description": "Consumidor Final aceitou os Termos de Uso?"
+                      },
+                      "politicaPrivacidade": {
+                        "type": "boolean",
+                        "description": "Consumidor Final aceitou a Política de Privacidade?"
+                      },
+                      "dataCadastro": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Data em que o Consumidor Final foi cadastrado no sistema",
+                        "readOnly": true
+                      },
+                      "dataAtualizacao": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Data em que os dados de registro do Consumidor Final foram atualizados",
+                        "readOnly": true
+                      }
+                    }
+                  }
+                },
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Primeiro nome do Consumidor Final.",
+                    "example": "Bob"
+                  },
+                  "sobrenome": {
+                    "type": "string",
+                    "description": "Sobrenome do Consumidor Final.",
+                    "example": "Fellow"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "bob.fellow@gmail.com",
+                    "description": "email do Consumidor Final.",
+                    "minLength": 6,
+                    "maxLength": 254
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11,
+                    "description": "Número do CPF do Consumidor Final\n- validar o número do CPF informado",
+                    "example": "22222222222"
+                  },
+                  "data_nascimento": {
+                    "type": "string",
+                    "format": "date",
+                    "maxLength": 10,
+                    "description": "Data de nascimento do Consumidor Final",
+                    "minLength": 10,
+                    "example": "2000-02-29"
+                  },
+                  "telefone_ddd": {
+                    "type": "string",
+                    "description": "DDD do Número de telefone do Consumidor Final.\nExemplo: 61",
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "example": "61"
+                  },
+                  "telefone_numero": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 9,
+                    "description": "Número do telefone do Consumidor Final",
+                    "example": "23456781"
+                  },
+                  "rede_social_origem": {
+                    "type": "array",
+                    "description": "Lista contendo nomes de redes sociais onde o Consumidor Final foi impactado",
+                    "items": {
+                      "type": "string",
+                      "example": "Instagram"
+                    }
+                  },
+                  "termos_uso": {
+                    "type": "boolean",
+                    "description": "Consumidor Final aceitou os Termos de Uso?",
+                    "default": false
+                  },
+                  "politica_privacidade": {
+                    "type": "boolean",
+                    "description": "Consumidor Final aceitou a Política de Privacidade?",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "nome",
+                  "sobrenome",
+                  "email",
+                  "cpf",
+                  "termos_uso",
+                  "politica_privacidade"
+                ]
+              },
+              "examples": {
+                "Cria consumidor Bob Fellow": {
+                  "value": {
+                    "nome": "Bob",
+                    "sobrenome": "Fellow",
+                    "email": "bob.fellow@gmail.com",
+                    "cpf": "22222222222",
+                    "data_nascimento": "2000-02-29",
+                    "telefone_ddd": "61",
+                    "telefone_numero": "23456781",
+                    "rede_social_origem": [
+                      "Instagram"
+                    ],
+                    "termos_uso": false,
+                    "politica_privacidade": false
+                  }
+                }
+              }
+            }
+          },
+          "description": "Cadastra um novo Consumidor Final\n"
+        },
+        "description": "# Cadastrar Consumidor\n\nCadastrar dados de um novo Consumidor Final.\n\n- Ser possível realizar o cadastro através de e-mail\n\n## Critérios de Aceite:\n\nRequisitos e validações seguindo as propriedades do modelo, e adicionalmente valida-se:\n- formato de email  \n  Exemplo: `consumidor@email.me`\n- número de CPF\n\n### Frontend\n- Validar formato e domínio de campos no frontend, a partir da digitação dos dados pelo usuário;\n- Registrar logging de operações e experiência de usuário.\n\n### Backend\n- Validar formato e domínio de campos no backend, prevenindo a entrada de dados incorretos via API;\n- Ser possível realizar o cadastro através de e-mail e senha na aplicação;\n\n### Conformidade\nMonitoramento e auditoria de dados\n- Manter rastreabilidade dos dados, sendo possível identificar a data de entrada do consumidor no sistema,\n  assim como seu meio de origem (Waze/Whatsapp);\n- Não permitir a duplicidade de usuários no sistema (e-mail e CPF)\n  - email é único;\n  - CPF é único;\n  - CPF não pode ser associado a mais de um email;\n- Registrar logging da operação.\n",
+        "security": [
+          {
+            "API-Key-Token": []
+          }
+        ],
+        "tags": [
+          "Consumidores"
+        ]
+      },
+      "parameters": [],
+      "get": {
+        "summary": "Obter lista de consumidores",
+        "operationId": "get_consumidores",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "x-examples": {
+                    "example-1": [
+                      {
+                        "id": 142,
+                        "nomeCompleto": "Alice Smith",
+                        "email": "alice.smith@mail.me",
+                        "cpf": "11111111111",
+                        "dateOfBirth": "1997-10-31",
+                        "emailVerified": true,
+                        "signUpDate": "2019-08-24"
+                      },
+                      {
+                        "id": 143,
+                        "nomeCompleto": "Rebecca Auge",
+                        "email": "rebecca@mail.me",
+                        "cpf": "22222222222",
+                        "dateOfBirth": "1999-10-31",
+                        "emailVerified": true,
+                        "signUpDate": "2019-08-24"
+                      }
+                    ]
+                  },
+                  "items": {
+                    "$ref": "#/components/schemas/Consumidores"
+                  }
+                },
+                "examples": {
+                  "Lista de consumidores": {
+                    "value": [
+                      {
+                        "nome": "Alice",
+                        "sobrenome": "Smith",
+                        "email": "alice.smith@mail.me",
+                        "cpf": "11111111111",
+                        "data_nascimento": "2000-02-29",
+                        "telefone_ddd": "61",
+                        "telefone_numero": "12345678",
+                        "rede_social_origem": [
+                          "Waze"
+                        ],
+                        "cadastro_atualizado": true,
+                        "email_verificado": false,
+                        "termos_uso": false,
+                        "politica_privacidade": false,
+                        "data_cadastro": "2022-09-07T00:00:00",
+                        "data_atualizacao": "2022-10-05T00:00:00"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado\n\nQuando o token for inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Consumidores não foram cadastrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {
+                  "não cadastrado": {
+                    "value": {
+                      "namespace": "voucher-landingpage-api",
+                      "informationLink": "http://localhost:/docs",
+                      "code": "string",
+                      "correlationId": 0,
+                      "debugId": "string",
+                      "message": "Consumidores não cadastrados",
+                      "name": "string",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "API-Key-Token": []
+          }
+        ],
+        "description": "Obtem lista de Consumidores Finais cadastrados na base de campanhas promocionais",
+        "tags": [
+          "Consumidores"
+        ]
+      }
+    },
+    "/consumidores/{email}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Obter dados de um consumidor",
+        "responses": {
+          "200": {
+            "description": "Consumidor encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Consumidores"
+                },
+                "examples": {
+                  "dados Alice Smith": {
+                    "value": {
+                      "nome": "Alice",
+                      "sobrenome": "Smith",
+                      "email": "alice.smith@mail.me",
+                      "cpf": "11111111111",
+                      "data_nascimento": "2000-02-29",
+                      "telefone_ddd": "11",
+                      "telefone_numero": "81234567",
+                      "rede_social_origem": [
+                        "Waze"
+                      ],
+                      "cadastro_atualizado": true,
+                      "email_verificado": true,
+                      "termos_uso": true,
+                      "politica_privacidade": true,
+                      "data_cadastro": "2022-09-07T00:00:00",
+                      "data_atualizacao": "2022-10-05T00:00:00"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Consumidor não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationErrors"
+                },
+                "examples": {
+                  "não encontrado": {
+                    "value": {
+                      "namespace": "voucher-landingpage-api",
+                      "informationLink": "http://localhost/docs/",
+                      "code": "VL001",
+                      "correlationId": null,
+                      "debugId": "5013d743-f534-4bb3-b6cc-69787044fc8d",
+                      "message": "Consumidor não encontrado.",
+                      "name": "VALIDATION_ERROR",
+                      "details": [
+                        {
+                          "field": "",
+                          "issue": "value_error.missing",
+                          "location": "body"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_consumidores_email",
+        "description": "Obter dados de um Consumidor FInal por email cadastrado",
+        "security": [
+          {
+            "API-Key-Token": []
+          }
+        ],
+        "tags": [
+          "Consumidores"
+        ]
+      },
+      "patch": {
+        "summary": "Atualizar dados de consumidor",
+        "operationId": "patch_consumidores_email",
+        "responses": {
+          "200": {
+            "description": "Dados de Consumidor atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "adriano": 1
+                    }
+                  },
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "atualizado com sucesso": {
+                    "value": {
+                      "message": "Consumidor atualizado com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "cpf inválido": {
+                    "value": {
+                      "": "CPF inválido"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Consumidor não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "Consumidor não encontrado"
+                    }
+                  }
+                },
+                "examples": {
+                  "não encontrado": {
+                    "value": {
+                      "message": "não foi encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CPF já em uso por outro consumidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "Email já em uso por outro usuário"
+                    }
+                  }
+                },
+                "examples": {
+                  "cpf invalido": {
+                    "value": {
+                      "message": "CPF já em uso por outro consumidor"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Atualiza dados de um consumidor identificado pelo email cadastrado\n\nRequisitos e validações seguindo as propriedades do modelo, e adicionalmente valida-se:\n- formato de email  \n  Exemplo: `consumidor@email.me`\n- número de CPF\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "id": 142,
+                    "nomeCompleto": "Alice Smith",
+                    "email": "alice.smith@mail.me",
+                    "cpf": "11111111111",
+                    "dateOfBirth": "1997-10-31",
+                    "emailVerified": true,
+                    "signUpDate": "2019-08-24"
+                  }
+                },
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Primeiro nome do Consumidor Final."
+                  },
+                  "sobrenome": {
+                    "type": "string",
+                    "description": "Sobrenome do Consumidor Final."
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11,
+                    "description": "Número do CPF do Consumidor Final\n- validar o número do CPF informado",
+                    "example": "11111111111"
+                  },
+                  "data_nascimento": {
+                    "type": "string",
+                    "format": "date",
+                    "maxLength": 10,
+                    "description": "Data de nascimento do Consumidor Final",
+                    "minLength": 10
+                  },
+                  "telefone_ddd": {
+                    "type": "string",
+                    "description": "DDD do Número de telefone do Consumidor Final.\nExemplo: 61",
+                    "minLength": 2,
+                    "maxLength": 2
+                  },
+                  "telefone_numero": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 9,
+                    "description": "Número do telefone do Consumidor Final"
+                  },
+                  "rede_social_origem": {
+                    "type": "array",
+                    "description": "Lista contendo nomes de redes sociais onde o Consumidor Final foi impactado",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cadastro_atualizado": {
+                    "type": "boolean",
+                    "description": "Consumidor Final completou o seus dados de cadastro?"
+                  },
+                  "email_verificado": {
+                    "type": "boolean",
+                    "description": "Consumidor Final realizou a confirmação do email informado?"
+                  },
+                  "termos_uso": {
+                    "type": "boolean",
+                    "description": "Consumidor Final aceitou os Termos de Uso?"
+                  },
+                  "politica_privacidade": {
+                    "type": "boolean",
+                    "description": "Consumidor Final aceitou a Política de Privacidade?"
+                  }
+                }
+              },
+              "examples": {
+                "Atualiza CPF": {
+                  "value": {
+                    "cpf": "11111111111"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Atributos a serem atualizados"
+        },
+        "security": [
+          {
+            "API-Key-Token": []
+          }
+        ],
+        "tags": [
+          "Consumidores"
+        ]
+      },
+      "delete": {
+        "summary": "Excluir um consumidor (TBD)",
+        "operationId": "delete_consumidores_email",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Consumidor não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "Consumidor não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "# TBD\n\n**Regras a serem definidas** junto a política LGPD\n\nExclui consumidor do cadastro\n\n",
+        "security": [
+          {
+            "API-Key-Token": []
+          }
+        ],
+        "tags": [
+          "Consumidores"
+        ]
+      }
+    },
+    "/consumidores/password": {
+      "parameters": [],
+      "put": {
+        "summary": "Obter nova senha como Consumidor",
+        "operationId": "put_consumidores_password",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "sucesso na solicitação": {
+                    "value": {
+                      "message": "Email enviado para renovação"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "falta CPF": {
+                    "value": {
+                      "message": "Número de CPF não informado"
+                    }
+                  },
+                  "falta email": {
+                    "value": {
+                      "message": "email não informado"
+                    }
+                  },
+                  "cpf inválido": {
+                    "value": {
+                      "message": "Número de CPF inválido"
+                    }
+                  },
+                  "email incorreto": {
+                    "value": {
+                      "message": "Formato de email incorreto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não encontrado": {
+                    "value": {
+                      "message": "Consumidor não cadastrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "divergência de dados": {
+                    "value": {
+                      "message": "CPF e email não correspondem ao mesmo Consumidor"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Obtem nova senha de Consumidor Final\n\nA solicitação deve verificar a existência de Consumidor cadastrado tendo como identificação o número de CPF  e/ou email do Consumidor.\n\nRequisitos:\n- Número de CPF\n- email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cpf": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "cpf",
+                  "email"
+                ]
+              },
+              "examples": {
+                "dados para toca de senha": {
+                  "value": {
+                    "cpf": "22222222222",
+                    "email": "user@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Devem ser validadas:\n- integração com o ambiente Auth0 para verificar existência do cadastro.\n- existência do CPF informado em base local.\n- O email informado deve ter correspondência com o CPF informado em base local.\n\nEm qualquer caso (correspondência ou divergência), deve ser registrado logging de Conformidade referente às tentativas de renovação de senha."
+        },
+        "tags": [
+          "Consumidores"
+        ]
+      }
+    },
+    "/consumidores/{email}/meus-cupons": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Obter lista de cupons de um consumidor",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cupons"
+                  }
+                },
+                "examples": {
+                  "meus cupons": {
+                    "value": [
+                      {
+                        "id": 0,
+                        "consumidores_email": "user@example.com",
+                        "campanhas_id": "string",
+                        "situacao": "ATIVO",
+                        "data_reserva": "2019-08-24T14:15:22Z",
+                        "data_queima": "2019-08-24T14:15:22Z",
+                        "cupons_resgatados": 0,
+                        "cupons_queimados": 0,
+                        "sales_id": 0,
+                        "valor_desconto": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Consumidor sem cupons resgatados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "sem cupons": {
+                    "value": {
+                      "message": "Consumidor não resgatou cupons"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_consumidores_email_meus_cupons",
+        "description": "Obter lista de cupons resgatados de um consumidor",
+        "tags": [
+          "Consumidores"
+        ]
+      }
+    },
+    "/consumidores/{email}/campanhas/{id}/resgatar-cupom": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "email",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "put": {
+        "summary": "Resgatar cupom de uma campanha",
+        "operationId": "put_consumidores_email_campanhas_id_resgatar_cupom",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cupons"
+                },
+                "examples": {
+                  "cupom resgatado": {
+                    "value": {
+                      "id": 0,
+                      "consumidores_email": "user@example.com",
+                      "campanhas_id": "string",
+                      "situacao": "ATIVO",
+                      "data_reserva": "2019-08-24T14:15:22Z",
+                      "data_queima": "2019-08-24T14:15:22Z",
+                      "cupons_resgatados": 0,
+                      "cupons_queimados": 0,
+                      "sales_id": 0,
+                      "valor_desconto": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "cupons esgotados": {
+                    "value": {
+                      "message": "Cupons esgotados"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Resgata cupon de uma campanha",
+        "tags": [
+          "Consumidores"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Verificar estado do serviço",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "em execução": {
+                    "value": {
+                      "message": "A aplicação está em execução"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_health",
+        "description": "Verifica estado do serviço",
+        "security": [],
+        "tags": [
+          "Monitoramentos"
+        ]
+      }
+    },
+    "/campanhas": {
+      "get": {
+        "summary": "Obter lista de Campanhas",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campanhas"
+                },
+                "examples": {
+                  "campanha exemplo": {
+                    "value": {
+                      "id": 1,
+                      "titulo": "Ano Novo é uma Viagem",
+                      "subtitulo": "Abasteça e passe o Ano Novo viajando com a família",
+                      "descricao": "Abasteça N litros nos postos da BR-040 e ganhe desconto nas lojas AP/PM",
+                      "data_inicio": "2022-12-01T00:00:01",
+                      "data_termino": "2023-01-31T23:59:59",
+                      "imagem_ancora": "string",
+                      "tipo_campanha": "IPIRANGA",
+                      "situacao": "PLANEJADA",
+                      "quantidade_cupons": 1000,
+                      "cupons_resgatados": 7,
+                      "locais_habilitados": {
+                        "uf": [
+                          "DF"
+                        ],
+                        "cidade": [
+                          "Três Marias"
+                        ],
+                        "posto_tipo_componente": [
+                          "Pista"
+                        ],
+                        "posto_cnpj": [
+                          "12345678901234"
+                        ]
+                      },
+                      "tipo_uso": [
+                        {
+                          "id": {
+                            "tipo_consumo": "QUANTIDADE",
+                            "consumo_minimo": 10,
+                            "produtos": [
+                              "Pão de Queijo"
+                            ],
+                            "consumo_minimo_produtos": [
+                              {
+                                "consumo_minimo": 1,
+                                "produto": "Lata de Doce de Leite"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Campanhas não disponíveis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não disponíveis": {
+                    "value": {
+                      "message": "Campanhas não disponíveis"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_campanhas",
+        "description": "Obtem lista de Campanhas",
+        "tags": [
+          "Campanhas"
+        ]
+      }
+    },
+    "/campanhas/{id}/imagem-ancora": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Obter imagem de Campanha",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imagem": {
+                      "type": "string",
+                      "format": "binary",
+                      "readOnly": true
+                    }
+                  },
+                  "required": [
+                    "imagem"
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "description": "image/png"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "não autorizado": {
+                    "value": {
+                      "message": "Acesso não autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Não encontrada imagem para a campanha",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                },
+                "examples": {
+                  "não encontrada": {
+                    "value": {
+                      "message": "Imagem âncora não encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_campanhas_id_imagem_ancora",
+        "description": "Obtem imagem âncora de campanha",
+        "parameters": [],
+        "tags": [
+          "Campanhas"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Consumidores": {
+        "title": "Consumidores",
+        "type": "object",
+        "description": "Modelo de Dados para cadastro de Consumidores Finais",
+        "x-examples": {
+          "dados exemplo": {
+            "email": "fulano@email.me",
+            "nome": "string",
+            "sobrenome": "string",
+            "cpf": "stringstrin",
+            "data_nascimento": "2019-08-24",
+            "telefone_ddd": "st",
+            "telefone_numero": "stringst",
+            "rede_social_origem": [
+              "Waze"
+            ],
+            "email_verificado": true,
+            "cadastro_atualizado": true,
+            "termos_uso": true,
+            "politica_privacidade": true,
+            "data_cadastro": "2019-08-24T14:15:22Z",
+            "data_atualizacao": "2019-08-24T14:15:22Z"
+          }
+        },
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "fulano@email.me",
+            "description": "email do Consumidor Final.",
+            "minLength": 6,
+            "maxLength": 254
+          },
+          "nome": {
+            "type": "string",
+            "description": "Primeiro nome do Consumidor Final."
+          },
+          "sobrenome": {
+            "type": "string",
+            "description": "Sobrenome do Consumidor Final."
+          },
+          "cpf": {
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 11,
+            "description": "Número do CPF do Consumidor Final\n\n- deve ser validado o número do CPF"
+          },
+          "data_nascimento": {
+            "type": "string",
+            "format": "date",
+            "maxLength": 10,
+            "description": "Data de nascimento do Consumidor Final",
+            "minLength": 10
+          },
+          "telefone_ddd": {
+            "type": "string",
+            "description": "DDD do Número de telefone do Consumidor Final.\nExemplo: 61",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "telefone_numero": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 9,
+            "description": "Número do telefone do Consumidor Final"
+          },
+          "rede_social_origem": {
+            "description": "Lista contendo nomes de redes sociais onde o Consumidor Final foi impactado",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Waze"
+            }
+          },
+          "email_verificado": {
+            "type": "boolean",
+            "description": "Consumidor Final realizou a confirmação do email informado?"
+          },
+          "cadastro_atualizado": {
+            "type": "boolean",
+            "description": "Consumidor Final completou o seus dados de cadastro?"
+          },
+          "termos_uso": {
+            "type": "boolean",
+            "description": "Consumidor Final aceitou os Termos de Uso?",
+            "default": false
+          },
+          "politica_privacidade": {
+            "type": "boolean",
+            "description": "Consumidor Final aceitou a Política de Privacidade?",
+            "default": false
+          },
+          "data_cadastro": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data em que o Consumidor Final foi cadastrado no sistema",
+            "readOnly": true
+          },
+          "data_atualizacao": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data em que os dados de registro do Consumidor Final foram atualizados",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "nome",
+          "sobrenome",
+          "termos_uso",
+          "politica_privacidade"
+        ]
+      },
+      "Campanhas": {
+        "title": "Campanhas",
+        "x-stoplight": {
+          "id": "9kghwb3q4rwfi"
+        },
+        "type": "object",
+        "x-examples": {
+          "dados exemplo": {
+            "id": 1,
+            "titulo": "Ano Novo é uma Viagem",
+            "subtitulo": "Abasteça e passe o Ano Novo viajando com a família",
+            "descricao": "Abasteça N litros nos postos da BR-040 e ganhe desconto nas lojas AP/PM",
+            "data_inicio": "2022-12-01T00:00:01",
+            "data_termino": "2023-01-31T23:59:59",
+            "imagem_ancora": "string",
+            "tipo_campanha": "IPIRANGA",
+            "situacao": "PLANEJADA",
+            "quantidade_cupons": 1000,
+            "cupons_resgatados": 7,
+            "locais_habilitados": {
+              "uf": [
+                "DF"
+              ],
+              "cidade": [
+                "Três Marias"
+              ],
+              "posto_tipo_componente": [
+                "Pista"
+              ],
+              "posto_cnpj": [
+                "12345678901234"
+              ]
+            },
+            "tipo_uso": [
+              {
+                "id": {
+                  "tipo_consumo": "QUANTIDADE",
+                  "consumo_minimo": 10,
+                  "produtos": [
+                    "Pão de Queijo"
+                  ],
+                  "consumo_minimo_produtos": [
+                    {
+                      "consumo_minimo": 1,
+                      "produto": "Lata de Doce de Leite"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Chave de identificação da Campanha",
+            "example": 1,
+            "readOnly": true
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 10,
+            "description": "Título da campanha",
+            "example": "Ano Novo é uma Viagem",
+            "readOnly": true
+          },
+          "subtitulo": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 50,
+            "description": "Subtítulo da Campanha",
+            "example": "Abasteça e passe o Ano Novo viajando com a família",
+            "readOnly": true
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 30,
+            "description": "Descrição da campanha",
+            "example": "Abasteça N litros nos postos da BR-040 e ganhe desconto nas lojas AP/PM",
+            "readOnly": true
+          },
+          "data_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de início da campanha",
+            "example": "2022-12-01T00:00:01",
+            "readOnly": true
+          },
+          "data_termino": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de término da Campanha",
+            "example": "2023-01-31T23:59:59",
+            "readOnly": true
+          },
+          "imagem_ancora": {
+            "type": "string",
+            "format": "binary",
+            "description": "Imagem âncora a ser exibida junto com a campanha",
+            "readOnly": true
+          },
+          "tipo_campanha": {
+            "type": "string",
+            "description": "Tipo de Campanha (Ipiranga ou Revenda)",
+            "enum": [
+              "IPIRANGA",
+              "REVENDA"
+            ],
+            "example": "IPIRANGA",
+            "readOnly": true
+          },
+          "situacao": {
+            "type": "string",
+            "enum": [
+              "PLANEJADA",
+              "ATIVA",
+              "PAUSADA",
+              "CANCELADA",
+              "FINALIZADA"
+            ],
+            "description": "Estado atual da Campanha",
+            "example": "PLANEJADA",
+            "readOnly": true
+          },
+          "quantidade_cupons": {
+            "type": "integer",
+            "description": "Quantidade total de cupons que podem ser resgatados na Campanha",
+            "example": 1000,
+            "readOnly": true
+          },
+          "cupons_resgatados": {
+            "type": "integer",
+            "description": "Quantidade de cupons que já foram reservados na Campanha",
+            "example": 7,
+            "readOnly": true
+          },
+          "locais_habilitados": {
+            "anyOf": [
+              {
+                "properties": {
+                  "uf": {
+                    "type": "array",
+                    "maxItems": 27,
+                    "items": {
+                      "type": "string",
+                      "minLength": 0,
+                      "example": "DF",
+                      "readOnly": true
+                    },
+                    "readOnly": true
+                  },
+                  "cidade": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "Três Marias"
+                    }
+                  },
+                  "posto_tipo_componente": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "Pista"
+                    }
+                  },
+                  "posto_cnpj": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "12345678901234",
+                      "readOnly": true
+                    },
+                    "readOnly": true
+                  }
+                },
+                "required": [
+                  "uf",
+                  "cidade",
+                  "posto_tipo_componente",
+                  "posto_cnpj"
+                ]
+              }
+            ],
+            "type": "object",
+            "readOnly": true
+          },
+          "tipo_uso": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "anyOf": [
+                    {
+                      "properties": {
+                        "tipo_consumo": {
+                          "type": "string",
+                          "enum": [
+                            "QUANTIDADE",
+                            "VALOR"
+                          ],
+                          "example": "QUANTIDADE",
+                          "description": "Define a forma permitida de consumo mínimo (Quantidade ou Valor)",
+                          "readOnly": true
+                        },
+                        "consumo_minimo": {
+                          "type": "number",
+                          "example": 10,
+                          "description": "Número que representa o consumo total mínimo a ser realizado",
+                          "readOnly": true
+                        },
+                        "produtos": {
+                          "type": "array",
+                          "description": "Lista de ID de Produtos ou ID de Seguimento de Produtos que devem ser consumidos",
+                          "items": {
+                            "type": "string",
+                            "example": "Pão de Queijo",
+                            "readOnly": true
+                          },
+                          "readOnly": true
+                        },
+                        "consumo_minimo_produtos": {
+                          "type": "array",
+                          "description": "Lista de produtos que devem ter consumidos e com restrição de mínimo a ser consumido",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "consumo_minimo": {
+                                "type": "number",
+                                "example": 1,
+                                "description": "Número que representa o consumo mínimo a ser realizado do produto",
+                                "readOnly": true
+                              },
+                              "produto": {
+                                "type": "string",
+                                "description": "ID de Produto ou ID de Seguimento de Produto que tem consumo mínimo específico para ele",
+                                "example": "Lata de Doce de Leite",
+                                "readOnly": true
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "tipo_consumo"
+                      ]
+                    }
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "titulo",
+          "subtitulo",
+          "descricao",
+          "data_inicio",
+          "data_termino",
+          "tipo_campanha",
+          "situacao",
+          "quantidade_cupons",
+          "cupons_resgatados",
+          "locais_habilitados",
+          "tipo_uso"
+        ],
+        "description": "Modelo de Dados de Campanhas promocionais"
+      },
+      "Cupons": {
+        "title": "Cupons",
+        "x-stoplight": {
+          "id": "31vqmxv8rshn8"
+        },
+        "type": "object",
+        "description": "Modelo de Dados de Cupons para o serviços de promoções",
+        "x-examples": {
+          "Dados exemplo": {
+            "id": 1,
+            "consumidores_email": "consumidor@email.me",
+            "campanhas_id": "1",
+            "situacao": "ATIVO",
+            "data_reserva": "2022-10-07T00:00:01",
+            "data_queima": "2022-10-17T17:07:05",
+            "cupons_resgatados": 1,
+            "cupons_queimados": 1,
+            "sales_id": 1,
+            "valor_desconto": 15.88
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "ID do Cupom",
+            "example": 1
+          },
+          "consumidores_email": {
+            "type": "string",
+            "format": "email",
+            "description": "email do Consumidor",
+            "example": "consumidor@email.me"
+          },
+          "campanhas_id": {
+            "type": "string",
+            "description": "ID da Campanha",
+            "example": "1"
+          },
+          "situacao": {
+            "type": "string",
+            "enum": [
+              "ATIVO",
+              "PAUSADO",
+              "UTILIZADO",
+              "EXPIRADO",
+              "CANCELADO"
+            ],
+            "description": "Situação do Cupom",
+            "example": "ATIVO"
+          },
+          "data_reserva": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data-Hora em que o Consumidor efetuou a reserva/resgate do cupom",
+            "example": "2022-10-07T00:00:01"
+          },
+          "data_queima": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data em que o Cupom foi usado (queimado) pela solução PDV/Automação",
+            "example": "2022-10-17T17:07:05"
+          },
+          "cupons_resgatados": {
+            "type": "integer",
+            "description": "Quantidade de cupons resgatados pelo Consumidor",
+            "example": 1
+          },
+          "cupons_queimados": {
+            "type": "integer",
+            "description": "Quantidade de cupons usados (queimados) pelo Consumidor via serviço de PDV/Automação",
+            "example": 1
+          },
+          "sales_id": {
+            "type": "number",
+            "description": "ID de Número de NF/Cupom Fiscal emitido pelo serviço PDV/Automação",
+            "example": 1
+          },
+          "valor_desconto": {
+            "type": "number",
+            "description": "Valor do desconto concedido/efetivado na queima do cupom (a ser \"devolvido\" ao Revendedor/Franqueado)",
+            "example": 15.88
+          }
+        },
+        "required": [
+          "id",
+          "consumidores_email",
+          "campanhas_id",
+          "data_reserva",
+          "cupons_resgatados"
+        ]
+      },
+      "HTTPValidationErrors": {
+        "type": "object",
+        "x-examples": {
+          "Exemplo resposta": {
+            "namespace": "voucher-landingpage-api",
+            "informationLink": "http://localhost/docs/",
+            "code": "VL001",
+            "correlationId": null,
+            "debugId": "5013d743-f534-4bb3-b6cc-69787044fc8d",
+            "message": "Um ou mais campos foram informados indevidamente.",
+            "name": "VALIDATION_ERROR",
+            "details": [
+              {
+                "field": "",
+                "issue": "value_error.missing",
+                "location": "body"
+              }
+            ]
+          }
+        },
+        "description": "Para tratamento de erro utilizamos um json schema que tem como objetivo tratar os diferentes casos de erros",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "example": "voucher-landingpage-api",
+            "description": "Dominio responsavel por responder o erro"
+          },
+          "informationLink": {
+            "type": "string",
+            "description": "Link completo para alguma documentação adicional",
+            "example": "http://localhost:/docs"
+          },
+          "code": {
+            "type": "string",
+            "description": "ID do erro"
+          },
+          "correlationId": {
+            "type": "integer",
+            "description": "Id usado para aplicações distribuídas, para soluções com trace distribuído utilizar o campo do framework escolhido",
+            "nullable": true
+          },
+          "debugId": {
+            "type": "string",
+            "description": "Id unico gerado no servidor para fins de debug"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem informando de forma geral o que ocorreu\n(explicada melhor dentro do details: issue)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome unico para descrever o erro. Deve ser possível entender o erro ocorrido pelo nome"
+          },
+          "details": {
+            "type": "array",
+            "description": "Detalhamentos dos erros ocorridos, caso de erro 400 esse campo é obrigatório e deverá descrever o campo faltante",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Json Pointer informando qual o campo ocorreu o erro"
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "A razão do erro (detalhe do informado no message)"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Onde ocorreu o erro (ex: query, body, path)"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "namespace",
+          "informationLink",
+          "code",
+          "correlationId",
+          "debugId",
+          "message",
+          "name",
+          "details"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "API-Key-Token": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "API-Key-Token": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Campanhas"
+    },
+    {
+      "name": "Consumidores"
+    },
+    {
+      "name": "Monitoramentos"
+    }
+  ]
+}
